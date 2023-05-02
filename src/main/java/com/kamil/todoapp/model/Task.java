@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotBlank(message = "Task description must not be empty")
     private String description;

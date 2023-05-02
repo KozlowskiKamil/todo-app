@@ -1,5 +1,6 @@
 package com.kamil.todoapp.controler;
 
+import com.kamil.todoapp.TaskConfigurationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -8,17 +9,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class InfoControler {
-    @Autowired
     private DataSourceProperties dataSource;
-    @Value("${task.allowMultipleTaskFromTemplate}")
-    private String myProp;
+    private TaskConfigurationProperties myProp;
+
+    public InfoControler(final DataSourceProperties dataSource, final TaskConfigurationProperties myProp) {
+        this.dataSource = dataSource;
+        this.myProp = myProp;
+    }
+
     @GetMapping("/info/url")
-    String url(){
+    String url() {
         return dataSource.getUrl();
     }
+
     @GetMapping("/info/prop")
-    String myProp(){
-        return myProp;
+    boolean myProp() {
+        return myProp.getTemplate().isAllowMultipleTask();
     }
 
 }
