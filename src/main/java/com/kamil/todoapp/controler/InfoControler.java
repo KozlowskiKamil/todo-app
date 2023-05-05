@@ -25,4 +25,6 @@ public class InfoControler {
         return myProp.getTemplate().isAllowMultipleTask();
     }
 
+
+
 }

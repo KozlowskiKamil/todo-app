@@ -15,10 +15,10 @@ public class Task {
     @NotBlank(message = "Task description must not be empty")
     private String description;
     private boolean done;
-
     private LocalDateTime deadline;
-    private LocalDateTime created_on;
-    private LocalDateTime updated_on;
+
+    @Embedded
+    private Audit audit = new Audit();
 
 
     public Task() {
@@ -56,20 +56,11 @@ public class Task {
         this.done = done;
     }
 
-    public void updateFrom(final Task source){
+    public void updateFrom(final Task source) {
         description = source.description;
         done = source.done;
         deadline = source.deadline;
     }
-    @PrePersist
-    void prePersist(){
-        created_on = LocalDateTime.now();
-    }
-    @PreUpdate
-    void preMerge(){
-        updated_on = LocalDateTime.now();
-    }
-
 
 
 }
