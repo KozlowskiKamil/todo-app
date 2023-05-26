@@ -1,5 +1,6 @@
 package io.github.mat3e.logic;
 
+import io.github.mat3e.model.TaskGroup;
 import io.github.mat3e.model.TaskGroupRepository;
 import io.github.mat3e.model.TaskRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +45,25 @@ class TaskGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("id not found");
     }
+
+
+    @Test
+    @DisplayName("should toggle group")
+    void toggleGroup_workAsExpected(){
+        TaskRepository mockTaskRepository = taskRepositoryReturning(false);
+        var group = new TaskGroup();
+        var beforeToggle = group.isDone();
+
+        var mockRepository = mock(TaskGroupRepository.class);
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.of(group));
+
+        var toTest = new TaskGroupService(mockRepository, mockTaskRepository);
+
+        toTest.toggleGroup(0);
+
+        assertThat(group.isDone()).isEqualTo(!beforeToggle);
+    }
+
 
     private static TaskRepository taskRepositoryReturning(final boolean results) {
         var mockTaskRepository = mock(TaskRepository.class);

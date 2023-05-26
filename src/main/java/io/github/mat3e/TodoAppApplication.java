@@ -19,3 +19,5 @@ public class TodoAppApplication {
 		return new LocalValidatorFactoryBean();
 	}
 }
+
+// TODO: 27.05.2023  lekcja 107 DI wstrzykiwanie
