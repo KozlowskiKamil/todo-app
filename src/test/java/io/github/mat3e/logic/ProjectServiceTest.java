@@ -1,10 +1,7 @@
 package io.github.mat3e.logic;
 
 import io.github.mat3e.TaskConfigurationProperties;
-import io.github.mat3e.model.ProjectRepository;
-import io.github.mat3e.model.Task;
-import io.github.mat3e.model.TaskGroup;
-import io.github.mat3e.model.TaskGroupRepository;
+import io.github.mat3e.model.*;
 import io.github.mat3e.model.projection.GroupReadModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,8 +64,12 @@ class ProjectServiceTest {
         //given
         var today = LocalDate.now().atStartOfDay();
         //and
+
+        var project = projectWith("bar", Set.of(-1, -2));
+
         var mockRepository = mock(ProjectRepository.class);
-        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(mockRepository.findById(anyInt()))
+                .thenReturn(Optional.of(project));
         //and
         InMemoryGroupRepository inMemoryGroupRepo = inMemoryGroupRepository();
         int countBeforeCall = inMemoryGroupRepo.count();
@@ -79,9 +80,27 @@ class ProjectServiceTest {
 
         GroupReadModel result = toTest.createGroup(today, 1);
 
-//        assertThat(result)  todo
-        assertThat(countBeforeCall + 1)
-                .isNotEqualTo(inMemoryGroupRepo.count());
+        assertThat(result.getDescription()).isEqualTo("bar");
+        assertThat(result.getDeadline()).isEqualTo(today.minusDays(1));
+        assertThat(result.getTasks()).anyMatch(task -> task.getDescription().equals("foo"));
+
+
+        assertThat(countBeforeCall + 1).isEqualTo(inMemoryGroupRepo.count());
+    }
+
+
+    private Project projectWith(String projectDescription, Set<Integer> daysToDeadline) {
+        Set<ProjectStep> steps = daysToDeadline.stream()
+                .map(days -> {
+                    var step = mock(ProjectStep.class);
+                    when(step.getDescription()).thenReturn("foo");
+                    when(step.getDaysToDeadline()).thenReturn(days);
+                    return step;
+                }).collect(Collectors.toSet());
+        var result = mock(Project.class);
+        when(result.getDescription()).thenReturn(projectDescription);
+        when(result.getSteps()).thenReturn(steps);
+        return result;
     }
 
 
@@ -147,7 +166,10 @@ class ProjectServiceTest {
         public TaskGroup save(final TaskGroup entity) {
             if (entity.getId() == 0) {
                 try {
-                    TaskGroup.class.getDeclaredField("id").set(entity, ++index);
+                   var field = TaskGroup.class.getDeclaredField("id");
+                   field.setAccessible(true);
+                   field.set(entity, ++index);
+
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
