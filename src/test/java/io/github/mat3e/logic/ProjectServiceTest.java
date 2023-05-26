@@ -2,15 +2,17 @@ package io.github.mat3e.logic;
 
 import io.github.mat3e.TaskConfigurationProperties;
 import io.github.mat3e.model.ProjectRepository;
+import io.github.mat3e.model.Task;
+import io.github.mat3e.model.TaskGroup;
 import io.github.mat3e.model.TaskGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,8 +57,19 @@ class ProjectServiceTest {
         assertThat(exception)
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("id not found");
+    }
+
+    @Test
+    @DisplayName("Should create a new group from project")
+    void createGroup_configurationOk_existingProject_createAndSavesnewGropu(){
+        //given
+        var mockRepository = mock(ProjectRepository.class);
+        when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
+        //and
+        TaskConfigurationProperties mockConfig = configurationReturning(true);
 
     }
+
 
     @Test
     @DisplayName("Should throw illegalStateException when configured to alow just 1 group and no groups and np projects for a given id")
@@ -93,4 +106,46 @@ class ProjectServiceTest {
         when(mocConfig.getTemplate()).thenReturn(mockTemplate);
         return mocConfig;
     }
+
+    private TaskGroup inMemoryGroupRepository(){
+        new TaskGroupRepository() {
+            private int index = 0;
+            private Map<Integer, TaskGroup> map = new HashMap<>();
+
+
+            @Override
+            public List<TaskGroup> findAll() {
+                return new ArrayList<>(map.values());
+            }
+
+            @Override
+            public Optional<TaskGroup> findById(Integer id) {
+                return Optional.ofNullable(map.get(id));
+            }
+
+
+            // TODO: 26.05.2023  102 in memory minuta 6:22
+            @Override
+            public TaskGroup save(TaskGroup entity) {
+                if (entity.getId() == 0) {
+                    try {
+                        TaskGroup.class.getDeclaredField("id").set(entity, ++index);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchFieldException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                map.put(entity.getId(), entity);
+                return entity;
+            }
+
+            @Override
+            public boolean existsByDoneIsFalseAndProject_Id(Integer projectId) {
+                return false;
+            }
+        }
+    }
+
+
 }
