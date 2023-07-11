@@ -25,11 +25,11 @@ public class ProjectService {
         this.taskGroupService = taskGroupService;
         this.config = config;
     }
-    public ProjectService(final ProjectRepository repository, final TaskGroupRepository taskGroupRepository, final TaskConfigurationProperties config) {
-        this.repository = repository;
-        this.taskGroupRepository = taskGroupRepository;
-        this.config = config;
-    }
+//    public ProjectService(final ProjectRepository repository, final TaskGroupRepository taskGroupRepository, final TaskConfigurationProperties config) {
+//        this.repository = repository;
+//        this.taskGroupRepository = taskGroupRepository;
+//        this.config = config;
+//    }
 
     public List<Project> readAll() {
         return repository.findAll();
