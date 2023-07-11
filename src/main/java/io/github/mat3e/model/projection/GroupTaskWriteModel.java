@@ -1,6 +1,7 @@
 package io.github.mat3e.model.projection;
 
 import io.github.mat3e.model.Task;
+import io.github.mat3e.model.TaskGroup;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,7 @@ public class GroupTaskWriteModel {
         this.deadline = deadline;
     }
 
-    Task toTask() {
-        return new Task(description, deadline);
+    Task toTask(TaskGroup group) {
+        return new Task(description, deadline, group);
     }
 }

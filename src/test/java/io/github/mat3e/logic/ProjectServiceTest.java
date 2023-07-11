@@ -25,7 +25,7 @@ class ProjectServiceTest {
         TaskGroupRepository mockGroupRepository = groupRepositoryReturning(true);
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(false);
-        var toTest = new ProjectService(null, mockGroupRepository, mockConfig);
+        var toTest = new ProjectService(null, mockGroupRepository, null, mockConfig);
 
             // when
         var exception = catchThrowable(() -> toTest.createGroup(LocalDateTime.now(), 0));
@@ -48,7 +48,7 @@ class ProjectServiceTest {
         when(mockRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         TaskConfigurationProperties mockConfig = configurationReturning(true);
-        var toTest = new ProjectService(mockRepository, null, mockConfig);
+        var toTest = new ProjectService(mockRepository, null, null, mockConfig);
 
         // when
         var exception = catchThrowable(() -> toTest.createGroup(LocalDateTime.now(), 0));
@@ -72,11 +72,12 @@ class ProjectServiceTest {
                 .thenReturn(Optional.of(project));
         //and
         InMemoryGroupRepository inMemoryGroupRepo = inMemoryGroupRepository();
+        var serviceWithInMemRepo = dummyGroupService(inMemoryGroupRepo);
         int countBeforeCall = inMemoryGroupRepo.count();
         //and
         TaskConfigurationProperties mockConfig = configurationReturning(true);
 
-        var toTest = new ProjectService(mockRepository, inMemoryGroupRepo, mockConfig);
+        var toTest = new ProjectService(mockRepository, inMemoryGroupRepo, serviceWithInMemRepo, mockConfig);
 
         GroupReadModel result = toTest.createGroup(today, 1);
 
@@ -86,6 +87,10 @@ class ProjectServiceTest {
 
 
         assertThat(countBeforeCall + 1).isEqualTo(inMemoryGroupRepo.count());
+    }
+
+    private static TaskGroupService dummyGroupService(InMemoryGroupRepository inMemoryGroupRepo) {
+        return new TaskGroupService(inMemoryGroupRepo, null);
     }
 
 
@@ -114,7 +119,7 @@ class ProjectServiceTest {
         TaskGroupRepository mockGoupRepository = groupRepositoryReturning(false);
         //and
         TaskConfigurationProperties mocConfig = configurationReturning(true);
-        var toTest = new ProjectService(mockRepository, mockGoupRepository, mocConfig);
+        var toTest = new ProjectService(mockRepository, mockGoupRepository, null, mocConfig);
 
         // when
         var exception = catchThrowable(() -> toTest.createGroup(LocalDateTime.now(), 0));
