@@ -72,12 +72,17 @@ public class TestConfiguration {
                 try {
                     var field = Task.class.getDeclaredField("id");
                     field.setAccessible(true);
-                    field.set(entity, ++key);
+                    field.set(entity, key);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
                 tasks.put(key, entity);
                 return tasks.get(key);
+            }
+
+            @Override
+            public List<Task> findAllByGroup_Id(Integer groupId) {
+                return List.of();
             }
         };
     }
