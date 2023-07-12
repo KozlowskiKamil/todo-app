@@ -42,7 +42,6 @@ public class ProjectService {
         return repository.findById(projectId).map(project -> {
             var targetGroup = new GroupWriteModel();
             targetGroup.setDescription(project.getDescription());
-
             targetGroup.setTasks(project.getSteps().stream().map(projectStep -> {
                 var task = new GroupTaskWriteModel();
                 task.setDescription(projectStep.getDescription());

@@ -18,6 +18,14 @@
         .P\(10\) {
             padding: 10px;
         }
+
+        .Bdc\(red\) {
+            border-color: red !important;
+        }
+
+        .C\(red\) {
+            color: red;
+        }
     </style>
 
 </head>
@@ -31,34 +39,43 @@
             <ul class="P(0)">
                 <li th:each="step : ${project.steps}" th:text="|${step.description} (${step.daysToDeadline} dni)|"></li>
             </ul>
+            <form action="#" method="post" th:action="@{/projects/{projectId}(projectId=${project.id})}">
+                <label>Deadline
+                    <input type="datetime-local">
+                </label>
+                <button type="submit">Utwórz taski>></button>
+            </form>
         </dd>
     </dl>
     <fieldset>
+        <legend>Nowy projekt</legend>
         <!--/*@thymesVar id="project" type="io.github.mat3e.model.projection.ProjectWriteModel"*/-->
         <form action="#" method="post" th:action="@{/projects}" th:object="${project}">
-            <legend>Nowy projekt</legend>
+            <p class="C(red)" th:errors="*{all}" th:if="${#fields.hasAnyErrors()}"></p>
             <label>Opis
-                <input th:field="*{description}" type="text"/>
+                <input th:errorclass="'Bdc(red)'" th:field="*{description}" type="text"/>
             </label>
             <fieldset th:each="step,stepStat : *{steps}">
                 <legend th:text="|Krok ${stepStat.index + 1}|"></legend>
                 <label>Opis
-                    <input th:field="*{steps[__${stepStat.index}__].description}" type="text"/>
+                    <input th:errorclass="'Bdc(red)'" th:field="*{steps[__${stepStat.index}__].description}"
+                           type="text"/>
                 </label>
                 <label>Dni do końca projektu
-                    <input th:field="*{steps[__${stepStat.index}__].daysToDeadline}" type="number"/>
+                    <input th:errorclass="'Bdc(red)'" th:field="*{steps[__${stepStat.index}__].daysToDeadline}"
+                           type="number"/>
                 </label>
             </fieldset>
             <dev>
                 <button name="addStep" type="submit">+</button>
             </dev>
+            <p>
+                <button type="submit">Dodaj</button>
+                <button type="reset">Wyczyść</button>
+            </p>
         </form>
     </fieldset>
-    <p>
-        <button type="submit">Dodaj</button>
-        <button type="reset">Wyczyść</button>
 
-    </p>
 
 </main>
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>-->
