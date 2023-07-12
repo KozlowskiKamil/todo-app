@@ -22,4 +22,4 @@ public class TodoAppApplication {
     }
 }
 
-// TODO: 27.05.2023  lekcja 107 DI wstrzykiwanie
+// TODO: 27.05.2023  lekcja 160 i 159 aby naprawic wyswietlanie
