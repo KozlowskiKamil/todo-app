@@ -9,6 +9,7 @@
 </head>
 <body>
 <main>
+    <h1 th:if="${message != null}" th:text="${message}"></h1>
     <!--/*@thymesVar id="project" type="io.github.mat3e.model.projection.ProjectWriteModel"*/-->
     <form action="#" method="post" th:action="@{/projects}" th:object="${project}">
         <fieldset>
