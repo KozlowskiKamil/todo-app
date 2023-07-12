@@ -22,6 +22,6 @@ public class ProjectController {
     @PostMapping(params = "addStep")
     String addProjectStep(@ModelAttribute("project") ProjectWriteModel current) {
         current.getSteps().add(new ProjectStep());
-        return "project";
+        return "projects";
     }
 }
