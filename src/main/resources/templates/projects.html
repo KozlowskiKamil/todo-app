@@ -41,7 +41,7 @@
             </ul>
             <form action="#" method="post" th:action="@{/projects/{projectId}(projectId=${project.id})}">
                 <label>Deadline
-                    <input type="datetime-local">
+                    <input name="deadline" type="datetime-local">
                 </label>
                 <button type="submit">Utwórz taski>></button>
             </form>

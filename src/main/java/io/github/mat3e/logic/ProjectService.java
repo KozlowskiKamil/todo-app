@@ -35,7 +35,13 @@ public class ProjectService {
         return repository.save(toSave.toProject());
     }
 
-    public GroupReadModel createGroup(int projectId, LocalDateTime deadline ) {
+    //    public GroupReadModel createGroup(int projectId, LocalDateTime deadline ) {
+//        if (!config.getTemplate().isAllowMultipleTasks() && taskGroupRepository.existsByDoneIsFalseAndProject_Id(projectId)) {
+//            throw new IllegalStateException("Only one undone group from project is allowed");
+//        }
+
+
+    public GroupReadModel createGroup(LocalDateTime deadline, int projectId) {
         if (!config.getTemplate().isAllowMultipleTasks() && taskGroupRepository.existsByDoneIsFalseAndProject_Id(projectId)) {
             throw new IllegalStateException("Only one undone group from project is allowed");
         }
